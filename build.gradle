@@ -1,0 +1,27 @@
+buildscript {
+   repositories {
+      maven { url "https://plugins.gradle.org/m2/" }
+      mavenLocal()
+      jcenter()
+   }
+   dependencies {
+      classpath "us.ihmc:ihmc-build:0.14.0"
+   }
+}
+apply plugin: "us.ihmc.ihmc-build"
+
+ihmc {
+   group = "us.ihmc"
+   version = "0.0"
+   vcsUrl = "https://stash.ihmc.us/users/sbertrand/repos/reachabilitymap"
+   openSource = false
+
+   configureDependencyResolution()
+   configurePublications()
+}
+
+mainDependencies {
+   compile group: "us.ihmc", name: "atlas", version: groupDependencyVersion
+   compile group: "us.ihmc", name: "valkyrie", version: groupDependencyVersion
+   compile group: "us.ihmc", name: "ihmc-reachability-map", version: groupDependencyVersion
+}
