@@ -23,5 +23,5 @@ ihmc {
 mainDependencies {
    compile group: "us.ihmc", name: "atlas", version: groupDependencyVersion
    compile group: "us.ihmc", name: "valkyrie", version: groupDependencyVersion
-   compile group: "us.ihmc", name: "ihmc-reachability-map", version: groupDependencyVersion
+   compile group: "us.ihmc", name: "ihmc-avatar-interfaces", version: groupDependencyVersion
 }

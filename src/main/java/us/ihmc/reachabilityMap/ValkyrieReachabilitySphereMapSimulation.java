@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import us.ihmc.avatar.drcRobot.RobotTarget;
 import us.ihmc.avatar.jointAnglesWriter.JointAnglesWriter;
+import us.ihmc.avatar.reachabilityMap.ReachabilityMapListener;
+import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapCalculator;
 import us.ihmc.euclid.referenceFrame.FramePose3D;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.transform.RigidBodyTransform;
