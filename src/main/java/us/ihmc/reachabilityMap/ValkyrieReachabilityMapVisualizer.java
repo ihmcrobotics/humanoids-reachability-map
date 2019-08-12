@@ -36,11 +36,12 @@ public class ValkyrieReachabilityMapVisualizer
       SphereVoxelShape sphereVoxelShape = grid.getSphereVoxelShape();
       
       HumanoidFloatingRootJointRobot robot = valkyrieRobotModel.createHumanoidFloatingRootJointRobot(false);
-      valkyrieRobotModel.getDefaultRobotInitialSetup(0.0, 0.0).initializeRobot(robot, valkyrieRobotModel.getJointMap());
+//      valkyrieRobotModel.getDefaultRobotInitialSetup(0.0, 0.0).initializeRobot(robot, valkyrieRobotModel.getJointMap());
       SDFPerfectSimulatedSensorReader sensorReader = new SDFPerfectSimulatedSensorReader(robot, fullRobotModel, referenceFrames);
       sensorReader.read();
       SimulationConstructionSetParameters parameters = new SimulationConstructionSetParameters(true, 16000);
       SimulationConstructionSet scs = new SimulationConstructionSet(robot, parameters);
+      scs.setGroundVisible(false);
       scs.startOnAThread();
 
       int numberOfVoxel = grid.getNumberOfVoxelsPerDimension();
