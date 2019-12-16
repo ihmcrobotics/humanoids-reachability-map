@@ -22,7 +22,7 @@ public class ValkyrieReachabilitySphereMapSimulation
 {
    public ValkyrieReachabilitySphereMapSimulation() throws IOException
    {
-      ValkyrieRobotModel robotModel = new ValkyrieRobotModel(RobotTarget.SCS, false);
+      ValkyrieRobotModel robotModel = new ValkyrieRobotModel(RobotTarget.SCS);
       FullHumanoidRobotModel fullRobotModel = robotModel.createFullRobotModel();
       FloatingRootJointRobot sdfRobot = robotModel.createHumanoidFloatingRootJointRobot(false);
       final JointAnglesWriter jointAnglesWriter = new JointAnglesWriter(sdfRobot, fullRobotModel);

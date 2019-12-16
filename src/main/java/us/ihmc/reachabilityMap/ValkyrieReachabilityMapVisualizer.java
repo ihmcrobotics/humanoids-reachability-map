@@ -21,7 +21,7 @@ public class ValkyrieReachabilityMapVisualizer
 {
    public static void main(String[] args)
    {
-      ValkyrieRobotModel valkyrieRobotModel = new ValkyrieRobotModel(RobotTarget.SCS, false);
+      ValkyrieRobotModel valkyrieRobotModel = new ValkyrieRobotModel(RobotTarget.SCS);
       String robotName = FormattingTools.underscoredToCamelCase(valkyrieRobotModel.getSimpleRobotName(), true);
       FullHumanoidRobotModel fullRobotModel = valkyrieRobotModel.createFullRobotModel();
       HumanoidReferenceFrames referenceFrames = new HumanoidReferenceFrames(fullRobotModel);
