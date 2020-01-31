@@ -27,7 +27,6 @@ public class ValkyrieReachabilityMapVisualizer
       HumanoidReferenceFrames referenceFrames = new HumanoidReferenceFrames(fullRobotModel);
       long startTime = System.nanoTime();
       System.out.println("Loading reachability map");
-//      File fileToLoad = new File("C://Users//Sylvain//Desktop//Workspace1//Atlas//resources//us//ihmc//atlas//reachabilityMap//atlasReachabilitySphereMapSimulation//20150319_220135_AtlasUnpluggedV5DualRobotiq.xls");
       ReachabilityMapFileLoader reachabilityMapFileLoader = new ReachabilityMapFileLoader(robotName, fullRobotModel.getElevator(), referenceFrames);
       
       System.out.println("Done loading reachability map. Took: " + Conversions.nanosecondsToSeconds(System.nanoTime() - startTime) + " seconds.");
@@ -36,7 +35,6 @@ public class ValkyrieReachabilityMapVisualizer
       SphereVoxelShape sphereVoxelShape = grid.getSphereVoxelShape();
       
       HumanoidFloatingRootJointRobot robot = valkyrieRobotModel.createHumanoidFloatingRootJointRobot(false);
-//      valkyrieRobotModel.getDefaultRobotInitialSetup(0.0, 0.0).initializeRobot(robot, valkyrieRobotModel.getJointMap());
       SDFPerfectSimulatedSensorReader sensorReader = new SDFPerfectSimulatedSensorReader(robot, fullRobotModel, referenceFrames);
       sensorReader.read();
       SimulationConstructionSetParameters parameters = new SimulationConstructionSetParameters(true, 16000);
