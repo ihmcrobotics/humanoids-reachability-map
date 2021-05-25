@@ -19,5 +19,6 @@ ihmc {
 mainDependencies {
    api("us.ihmc:atlas:source")
    api("us.ihmc:valkyrie:source")
+   api("us.ihmc:nadia-hardware-drivers:source")
    api("us.ihmc:ihmc-avatar-interfaces:source")
 }
