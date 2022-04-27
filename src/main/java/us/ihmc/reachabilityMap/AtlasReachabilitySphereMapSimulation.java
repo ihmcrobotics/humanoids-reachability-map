@@ -73,8 +73,7 @@ public class AtlasReachabilitySphereMapSimulation
       //      calculator.setTransformFromControlFrameToEndEffectorBodyFixedFrame(transformFromPalmCenterToHandBodyFixedFrame);
 
       calculator.setupCalculatorToRecordInFile(robotName, getClass());
-            calculator.setGridParameters(25, 0.075, 50, 1);
-//      calculator.setGridParameters(5, 0.075, 5, 1);
+      calculator.setGridParameters(25, 0.075, 50, 1);
       calculator.setAngularSelection(false, true, true);
 
       FramePose3D gridFramePose = new FramePose3D(ReferenceFrame.getWorldFrame(), armJoints[0].getFrameBeforeJoint().getTransformToWorldFrame());
