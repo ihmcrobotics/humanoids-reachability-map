@@ -3,7 +3,9 @@ package us.ihmc.reachabilityMap;
 import java.io.IOException;
 
 import us.ihmc.avatar.drcRobot.RobotTarget;
+import us.ihmc.avatar.reachabilityMap.ReachabilityMapTools;
 import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapCalculator;
+import us.ihmc.avatar.reachabilityMap.Voxel3DGrid;
 import us.ihmc.euclid.referenceFrame.FramePose3D;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.transform.RigidBodyTransform;
@@ -48,6 +50,8 @@ public class ValkyrieReachabilitySphereMapSimulation
       SessionVisualizerControls guiControls = SessionVisualizer.startSessionVisualizer(session);
       guiControls.setCameraFocusPosition(calculator.getGridFramePose().getX(), calculator.getGridFramePose().getY(), calculator.getGridFramePose().getZ());
       guiControls.setCameraOrientation(Math.toRadians(15.0), Math.toRadians(170.0), 0.0);
+      guiControls.addStaticVisuals(ReachabilityMapTools.createReachibilityColorScaleVisuals());
+      guiControls.addStaticVisuals(ReachabilityMapTools.createBoundingBoxVisuals(calculator.getVoxel3DGrid()));
       calculator.setStaticVisualConsumer(guiControls::addStaticVisual);
 
       SimulationSessionControls simControls = session.getSimulationSessionControls();
@@ -63,11 +67,12 @@ public class ValkyrieReachabilitySphereMapSimulation
          throws IOException
    {
       OneDoFJointBasics[] armJoints = MultiBodySystemTools.createOneDoFJointPath(base, endEffector);
-      ReachabilitySphereMapCalculator calculator = new ReachabilitySphereMapCalculator(armJoints, controllerOutput);
+      ReachabilitySphereMapCalculator calculator = new ReachabilitySphereMapCalculator(armJoints,
+                                                                                       controllerOutput,
+                                                                                       Voxel3DGrid.newVoxel3DGrid(40, 0.05, 50, 1));
 
       calculator.setControlFramePose(controlFrameTransform);
       calculator.setupCalculatorToRecordInFile(robotName, getClass());
-      calculator.setGridParameters(40, 0.05, 50, 1);
       calculator.setAngularSelection(false, true, true);
 
       FramePose3D gridFramePose = new FramePose3D(ReferenceFrame.getWorldFrame(), armJoints[0].getFrameBeforeJoint().getTransformToWorldFrame());
