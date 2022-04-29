@@ -3,6 +3,7 @@ package us.ihmc.reachabilityMap;
 import java.io.IOException;
 
 import us.ihmc.avatar.drcRobot.RobotTarget;
+import us.ihmc.avatar.reachabilityMap.ReachabilityMapFileWriter;
 import us.ihmc.avatar.reachabilityMap.ReachabilityMapTools;
 import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapCalculator;
 import us.ihmc.avatar.reachabilityMap.Voxel3DGrid;
@@ -27,6 +28,8 @@ public class ValkyrieReachabilitySphereMapSimulation
 {
    public ValkyrieReachabilitySphereMapSimulation() throws IOException
    {
+      Voxel3DGrid voxel3DGrid = Voxel3DGrid.newVoxel3DGrid(40, 0.05, 50, 1);
+
       ValkyrieRobotModel robotModel = new ValkyrieRobotModel(RobotTarget.SCS);
       String robotName = "Valkyrie";
 
@@ -42,7 +45,12 @@ public class ValkyrieReachabilitySphereMapSimulation
       SimulationSession session = new SimulationSession("Reachability Analysis - Atlas");
       session.initializeBufferSize(16000);
       Robot robot = session.addRobot(robotDefinition);
-      ReachabilitySphereMapCalculator calculator = setupCalculator(robotName, base, endEffector, controlFrameToWristTransform, robot.getControllerOutput());
+      ReachabilitySphereMapCalculator calculator = setupCalculator(robotName,
+                                                                   base,
+                                                                   endEffector,
+                                                                   controlFrameToWristTransform,
+                                                                   robot.getControllerOutput(),
+                                                                   voxel3DGrid);
 
       robot.addController(calculator);
       session.addYoGraphicDefinition(calculator.getYoGraphicVisuals());
@@ -56,23 +64,23 @@ public class ValkyrieReachabilitySphereMapSimulation
 
       SimulationSessionControls simControls = session.getSimulationSessionControls();
       simControls.addExternalTerminalCondition(calculator::isDone);
-      simControls.simulate(Integer.MAX_VALUE);
+      simControls.simulateNow(Integer.MAX_VALUE);
+
+      ReachabilityMapFileWriter.exportVoxel3DGridToFile(robotName, getClass(), calculator.getRobotArmJoints(), calculator.getVoxel3DGrid());
    }
 
    private ReachabilitySphereMapCalculator setupCalculator(String robotName,
                                                            RigidBodyBasics base,
                                                            RigidBodyBasics endEffector,
                                                            RigidBodyTransform controlFrameTransform,
-                                                           ControllerOutput controllerOutput)
+                                                           ControllerOutput controllerOutput,
+                                                           Voxel3DGrid voxel3DGrid)
          throws IOException
    {
       OneDoFJointBasics[] armJoints = MultiBodySystemTools.createOneDoFJointPath(base, endEffector);
-      ReachabilitySphereMapCalculator calculator = new ReachabilitySphereMapCalculator(armJoints,
-                                                                                       controllerOutput,
-                                                                                       Voxel3DGrid.newVoxel3DGrid(40, 0.05, 50, 1));
+      ReachabilitySphereMapCalculator calculator = new ReachabilitySphereMapCalculator(armJoints, controllerOutput, voxel3DGrid);
 
       calculator.setControlFramePose(controlFrameTransform);
-      calculator.setupCalculatorToRecordInFile(robotName, getClass());
       calculator.setAngularSelection(false, true, true);
 
       FramePose3D gridFramePose = new FramePose3D(ReferenceFrame.getWorldFrame(), armJoints[0].getFrameBeforeJoint().getTransformToWorldFrame());
