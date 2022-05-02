@@ -41,10 +41,11 @@ public class ValkyrieReachabilitySphereMapSimulation
       controlFrameToWristTransform.getTranslation().set(0.025, 0.07, 0.0);
       simHelper.setControlFramePoseInParentJoint(controlFrameToWristTransform);
 
-      simHelper.start();
-
-      String robotName = "Valkyrie";
-      simHelper.exportDataToFile(robotName, getClass());
+      if (simHelper.start())
+      {
+         String robotName = "Valkyrie";
+         simHelper.exportDataToFile(robotName, getClass());
+      }
    }
 
    private static void createCollisions(RobotDefinition robotDefinition, ValkyrieJointMap jointMap)
