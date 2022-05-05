@@ -12,8 +12,8 @@ import us.ihmc.robotics.partNames.LegJointName;
 import us.ihmc.robotics.physics.CollidableHelper;
 import us.ihmc.robotics.robotSide.RobotSide;
 import us.ihmc.scs2.definition.collision.CollisionShapeDefinition;
+import us.ihmc.scs2.definition.geometry.Box3DDefinition;
 import us.ihmc.scs2.definition.geometry.Capsule3DDefinition;
-import us.ihmc.scs2.definition.geometry.STPBox3DDefinition;
 import us.ihmc.scs2.definition.geometry.Sphere3DDefinition;
 import us.ihmc.scs2.definition.robot.JointDefinition;
 import us.ihmc.scs2.definition.robot.RigidBodyDefinition;
@@ -29,13 +29,15 @@ public class ValkyrieReachabilitySphereMapSimulation
 
       ValkyrieJointMap jointMap = robotModel.getJointMap();
       RobotDefinition robotDefinition = robotModel.getRobotDefinition();
-      createCollisions(robotDefinition, jointMap);
+//      createCollisions(robotDefinition, jointMap);
+      robotDefinition.getOneDoFJointDefinition("leftShoulderRoll").setEffortLimits(5.0);
 
       String chestName = jointMap.getChestName();
       String leftHandName = jointMap.getHandName(RobotSide.LEFT);
       ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotDefinition, chestName, leftHandName);
       simHelper.setGridParameters(30, 0.05, 50, 1);
       simHelper.setAngularSelection(false, true, true);
+      simHelper.enableJointTorqueAnalysis(true);
       simHelper.setGridPosition(0.5, 0.2, 0.32);
       RigidBodyTransform controlFrameToWristTransform = new RigidBodyTransform();
       controlFrameToWristTransform.getTranslation().set(0.025, 0.07, 0.0);
@@ -128,8 +130,8 @@ public class ValkyrieReachabilitySphereMapSimulation
          collisionFront.setCollisionGroup(arm);
          torso.getCollisionShapeDefinitions().add(collisionFront);
 
-         STPBox3DDefinition collisionBackShape = new STPBox3DDefinition(0.35, 0.35, 0.40);
-         collisionBackShape.setMargins(1.0e-5, 4.0e-4);
+         Box3DDefinition collisionBackShape = new Box3DDefinition(0.35, 0.35, 0.40);
+         //         collisionBackShape.setMargins(1.0e-5, 4.0e-4);
          CollisionShapeDefinition collisionBack = new CollisionShapeDefinition(collisionBackShape);
          collisionBack.setName("chestBackCollision");
          collisionBack.getOriginPose().getTranslation().set(-0.111, 0.0, 0.208);
