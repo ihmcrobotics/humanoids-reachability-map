@@ -7,6 +7,7 @@ import us.ihmc.atlas.AtlasRobotVersion;
 import us.ihmc.avatar.drcRobot.RobotTarget;
 import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapSimulationHelper;
 import us.ihmc.commons.FormattingTools;
+import us.ihmc.euclid.Axis3D;
 import us.ihmc.robotics.robotSide.RobotSide;
 
 public class AtlasReachabilitySphereMapSimulation
@@ -19,7 +20,9 @@ public class AtlasReachabilitySphereMapSimulation
       String leftHandName = robotModel.getJointMap().getHandName(RobotSide.LEFT);
       ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotModel.getRobotDefinition(), chestName, leftHandName);
       simHelper.setGridParameters(25, 0.025, 50, 1);
-      simHelper.setAngularSelection(false, true, true);
+      simHelper.setEvaluateDReachability(false);
+      simHelper.setEvaluateD0Reachability(false);
+      simHelper.setPalmOrthogonalAxis(Axis3D.X);
       simHelper.setGridPosition(0.4, 0.4, 0.5);
       simHelper.setControlFramePoseInParentJoint(robotModel.getJointMap().getHandControlFrameToWristTransform(RobotSide.LEFT));
 

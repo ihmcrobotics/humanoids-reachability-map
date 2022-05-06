@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import us.ihmc.avatar.drcRobot.RobotTarget;
 import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapSimulationHelper;
+import us.ihmc.euclid.Axis3D;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryTools;
 import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple3D.Vector3D;
@@ -29,14 +30,16 @@ public class ValkyrieReachabilitySphereMapSimulation
 
       ValkyrieJointMap jointMap = robotModel.getJointMap();
       RobotDefinition robotDefinition = robotModel.getRobotDefinition();
-//      createCollisions(robotDefinition, jointMap);
+      //      createCollisions(robotDefinition, jointMap);
       robotDefinition.getOneDoFJointDefinition("leftShoulderRoll").setEffortLimits(5.0);
 
       String chestName = jointMap.getChestName();
       String leftHandName = jointMap.getHandName(RobotSide.LEFT);
       ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotDefinition, chestName, leftHandName);
       simHelper.setGridParameters(30, 0.05, 50, 1);
-      simHelper.setAngularSelection(false, true, true);
+      simHelper.setPalmOrthogonalAxis(Axis3D.X);
+      simHelper.setEvaluateDReachability(false);
+      simHelper.setEvaluateD0Reachability(false);
       simHelper.enableJointTorqueAnalysis(true);
       simHelper.setGridPosition(0.5, 0.2, 0.32);
       RigidBodyTransform controlFrameToWristTransform = new RigidBodyTransform();
