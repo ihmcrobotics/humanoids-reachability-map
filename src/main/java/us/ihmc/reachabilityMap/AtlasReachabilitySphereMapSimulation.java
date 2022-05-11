@@ -5,10 +5,11 @@ import java.io.IOException;
 import us.ihmc.atlas.AtlasRobotModel;
 import us.ihmc.atlas.AtlasRobotVersion;
 import us.ihmc.avatar.drcRobot.RobotTarget;
+import us.ihmc.avatar.reachabilityMap.ReachabilityMapRobotInformation;
 import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapSimulationHelper;
-import us.ihmc.commons.FormattingTools;
 import us.ihmc.euclid.Axis3D;
 import us.ihmc.robotics.robotSide.RobotSide;
+import us.ihmc.scs2.definition.robot.RobotDefinition;
 
 public class AtlasReachabilitySphereMapSimulation
 {
@@ -18,18 +19,23 @@ public class AtlasReachabilitySphereMapSimulation
 
       String chestName = robotModel.getJointMap().getChestName();
       String leftHandName = robotModel.getJointMap().getHandName(RobotSide.LEFT);
-      ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotModel.getRobotDefinition(), chestName, leftHandName);
+
+      RobotDefinition robotDefinition = robotModel.createRobotDefinition();
+      robotDefinition.setName(AtlasRobotVersion.ATLAS_UNPLUGGED_V5_DUAL_ROBOTIQ.toString());
+      ReachabilityMapRobotInformation robotInformation = new ReachabilityMapRobotInformation(robotDefinition, chestName, leftHandName);
+      robotInformation.setControlFramePoseInParentJoint(robotModel.getJointMap().getHandControlFrameToWristTransform(RobotSide.LEFT));
+      robotInformation.setOrthogonalToPalm(Axis3D.X);
+
+      ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotInformation);
       simHelper.setGridParameters(25, 0.025, 50, 1);
       simHelper.setEvaluateDReachability(false);
       simHelper.setEvaluateD0Reachability(false);
-      simHelper.setPalmOrthogonalAxis(Axis3D.X);
       simHelper.setGridPosition(0.4, 0.4, 0.5);
-      simHelper.setControlFramePoseInParentJoint(robotModel.getJointMap().getHandControlFrameToWristTransform(RobotSide.LEFT));
 
-      simHelper.start();
-
-      String robotName = FormattingTools.underscoredToCamelCase(AtlasRobotVersion.ATLAS_UNPLUGGED_V5_DUAL_ROBOTIQ.toString(), true);
-      simHelper.exportDataToFile(robotName, getClass());
+      if (simHelper.start())
+      {
+         simHelper.exportDataToFile(getClass());
+      }
    }
 
    public static void main(String[] args) throws IOException
