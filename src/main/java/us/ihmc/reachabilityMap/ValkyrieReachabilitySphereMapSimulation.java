@@ -48,8 +48,8 @@ public class ValkyrieReachabilitySphereMapSimulation
 
       ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotInformation);
       simHelper.setGridParameters(30, 0.05, 50, 1);
-      simHelper.setEvaluateDReachability(false);
-      simHelper.setEvaluateD0Reachability(false);
+      simHelper.setEvaluateRReachability(false);
+      simHelper.setEvaluateR2Reachability(false);
       simHelper.enableJointTorqueAnalysis(true);
       simHelper.setGridPosition(0.5, 0.2, 0.32);
 

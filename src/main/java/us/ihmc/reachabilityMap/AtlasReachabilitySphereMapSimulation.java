@@ -28,8 +28,8 @@ public class AtlasReachabilitySphereMapSimulation
 
       ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotInformation);
       simHelper.setGridParameters(25, 0.025, 50, 1);
-      simHelper.setEvaluateDReachability(false);
-      simHelper.setEvaluateD0Reachability(false);
+      simHelper.setEvaluateRReachability(false);
+      simHelper.setEvaluateR2Reachability(false);
       simHelper.setGridPosition(0.4, 0.4, 0.5);
 
       if (simHelper.start())
