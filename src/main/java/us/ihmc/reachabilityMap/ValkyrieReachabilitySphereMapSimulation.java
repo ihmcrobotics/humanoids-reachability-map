@@ -55,7 +55,7 @@ public class ValkyrieReachabilitySphereMapSimulation
 
       if (simHelper.start())
       {
-         simHelper.exportDataToFile(getClass());
+         simHelper.exportDataToMatlabFile(getClass());
       }
    }
 

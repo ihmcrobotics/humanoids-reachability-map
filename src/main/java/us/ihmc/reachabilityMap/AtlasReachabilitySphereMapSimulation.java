@@ -27,14 +27,15 @@ public class AtlasReachabilitySphereMapSimulation
       robotInformation.setOrthogonalToPalm(Axis3D.X);
 
       ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotInformation);
-      simHelper.setGridParameters(25, 0.025, 50, 1);
-      simHelper.setEvaluateRReachability(false);
-      simHelper.setEvaluateR2Reachability(false);
+      simHelper.setGridParameters(35, 0.05, 40, 5);
+      simHelper.setEvaluateRReachability(true);
+      simHelper.setEvaluateR2Reachability(true);
+      simHelper.enableJointTorqueAnalysis(false);
       simHelper.setGridPosition(0.4, 0.4, 0.5);
 
       if (simHelper.start())
       {
-         simHelper.exportDataToFile(getClass());
+         simHelper.exportDataToMatlabFile(getClass());
       }
    }
 
