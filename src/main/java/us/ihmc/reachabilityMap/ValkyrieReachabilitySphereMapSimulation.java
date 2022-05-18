@@ -2,7 +2,6 @@ package us.ihmc.reachabilityMap;
 
 import java.io.IOException;
 
-import us.ihmc.atlas.AtlasRobotVersion;
 import us.ihmc.avatar.drcRobot.RobotTarget;
 import us.ihmc.avatar.reachabilityMap.ReachabilityMapRobotInformation;
 import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapSimulationHelper;
@@ -34,12 +33,10 @@ public class ValkyrieReachabilitySphereMapSimulation
       RobotDefinition robotDefinition = robotModel.getRobotDefinition();
       robotDefinition.setName("Valkyrie");
       createCollisions(robotDefinition, jointMap);
-      robotDefinition.getOneDoFJointDefinition("leftShoulderRoll").setEffortLimits(5.0);
 
       String chestName = jointMap.getChestName();
       String leftHandName = jointMap.getHandName(RobotSide.LEFT);
 
-      robotDefinition.setName(AtlasRobotVersion.ATLAS_UNPLUGGED_V5_DUAL_ROBOTIQ.toString());
       ReachabilityMapRobotInformation robotInformation = new ReachabilityMapRobotInformation(robotDefinition, chestName, leftHandName);
       RigidBodyTransform controlFrameToWristTransform = new RigidBodyTransform();
       controlFrameToWristTransform.getTranslation().set(0.025, 0.07, 0.0);
@@ -47,9 +44,9 @@ public class ValkyrieReachabilitySphereMapSimulation
       robotInformation.setOrthogonalToPalm(Axis3D.X);
 
       ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotInformation);
-      simHelper.setGridParameters(30, 0.05, 50, 1);
-      simHelper.setEvaluateRReachability(false);
-      simHelper.setEvaluateR2Reachability(false);
+      simHelper.setGridParameters(35, 0.05, 40, 5);
+      simHelper.setEvaluateRReachability(true);
+      simHelper.setEvaluateR2Reachability(true);
       simHelper.enableJointTorqueAnalysis(true);
       simHelper.setGridPosition(0.5, 0.2, 0.32);
 
