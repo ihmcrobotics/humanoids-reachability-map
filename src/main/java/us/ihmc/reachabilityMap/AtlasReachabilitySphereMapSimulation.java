@@ -5,65 +5,38 @@ import java.io.IOException;
 import us.ihmc.atlas.AtlasRobotModel;
 import us.ihmc.atlas.AtlasRobotVersion;
 import us.ihmc.avatar.drcRobot.RobotTarget;
-import us.ihmc.avatar.jointAnglesWriter.JointAnglesWriter;
-import us.ihmc.avatar.reachabilityMap.ReachabilityMapListener;
-import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapCalculator;
-import us.ihmc.commons.FormattingTools;
-import us.ihmc.euclid.referenceFrame.FramePose3D;
-import us.ihmc.euclid.referenceFrame.ReferenceFrame;
-import us.ihmc.euclid.transform.RigidBodyTransform;
-import us.ihmc.mecano.multiBodySystem.interfaces.OneDoFJointBasics;
-import us.ihmc.mecano.tools.MultiBodySystemTools;
-import us.ihmc.robotModels.FullHumanoidRobotModel;
-import us.ihmc.robotics.partNames.LimbName;
+import us.ihmc.avatar.reachabilityMap.ReachabilityMapRobotInformation;
+import us.ihmc.avatar.reachabilityMap.ReachabilitySphereMapSimulationHelper;
+import us.ihmc.euclid.Axis3D;
 import us.ihmc.robotics.robotSide.RobotSide;
-import us.ihmc.simulationconstructionset.FloatingRootJointRobot;
-import us.ihmc.simulationconstructionset.SimulationConstructionSet;
-import us.ihmc.simulationconstructionset.SimulationConstructionSetParameters;
+import us.ihmc.scs2.definition.robot.RobotDefinition;
 
 public class AtlasReachabilitySphereMapSimulation
 {
    public AtlasReachabilitySphereMapSimulation() throws IOException
    {
       AtlasRobotModel robotModel = new AtlasRobotModel(AtlasRobotVersion.ATLAS_UNPLUGGED_V5_DUAL_ROBOTIQ, RobotTarget.SCS, false);
-      FullHumanoidRobotModel fullRobotModel = robotModel.createFullRobotModel();
-      FloatingRootJointRobot sdfRobot = robotModel.createHumanoidFloatingRootJointRobot(false);
-      final JointAnglesWriter jointAnglesWriter = new JointAnglesWriter(sdfRobot, fullRobotModel);
 
-      SimulationConstructionSetParameters parameters = new SimulationConstructionSetParameters(true, 16000);
-      SimulationConstructionSet scs = new SimulationConstructionSet(sdfRobot, parameters);
-      scs.setGroundVisible(false);
-      
-      OneDoFJointBasics[] armJoints = MultiBodySystemTools.createOneDoFJointPath(fullRobotModel.getChest(), fullRobotModel.getHand(RobotSide.LEFT));
-      ReachabilitySphereMapCalculator calculator = new ReachabilitySphereMapCalculator(armJoints, scs);
-      calculator.setControlFramePose(fullRobotModel.getHandControlFrame(RobotSide.LEFT).getTransformToDesiredFrame(fullRobotModel.getHand(RobotSide.LEFT).getBodyFixedFrame()));
-      FramePose3D palmCenter = new FramePose3D(fullRobotModel.getHandControlFrame(RobotSide.LEFT));
-      palmCenter.changeFrame(fullRobotModel.getEndEffector(RobotSide.LEFT, LimbName.ARM).getBodyFixedFrame());
-      RigidBodyTransform transformFromPalmCenterToHandBodyFixedFrame = new RigidBodyTransform();
-      palmCenter.get(transformFromPalmCenterToHandBodyFixedFrame);
-//      reachabilitySphereMapCalculator.setTransformFromControlFrameToEndEffectorBodyFixedFrame(transformFromPalmCenterToHandBodyFixedFrame);
-      String robotName = FormattingTools.underscoredToCamelCase(AtlasRobotVersion.ATLAS_UNPLUGGED_V5_DUAL_ROBOTIQ.toString(), true);
-      calculator.setupCalculatorToRecordInFile(robotName, getClass());
-      calculator.setGridParameters(25, 0.075, 50, 1);
-      calculator.setAngularSelection(false, true, true);
+      String chestName = robotModel.getJointMap().getChestName();
+      String leftHandName = robotModel.getJointMap().getHandName(RobotSide.LEFT);
 
-      FramePose3D gridFramePose = new FramePose3D(ReferenceFrame.getWorldFrame(), armJoints[0].getFrameBeforeJoint().getTransformToWorldFrame());
-      gridFramePose.appendTranslation(calculator.getGridSizeInMeters() / 2.5, 0.15, -0.20);
-      calculator.setGridFramePose(gridFramePose);
+      RobotDefinition robotDefinition = robotModel.createRobotDefinition();
+      robotDefinition.setName(AtlasRobotVersion.ATLAS_UNPLUGGED_V5_DUAL_ROBOTIQ.toString());
+      ReachabilityMapRobotInformation robotInformation = new ReachabilityMapRobotInformation(robotDefinition, chestName, leftHandName);
+      robotInformation.setControlFramePoseInParentJoint(robotModel.getJointMap().getHandControlFrameToWristTransform(RobotSide.LEFT));
+      robotInformation.setOrthogonalToPalm(Axis3D.X);
 
-      ReachabilityMapListener listener = new ReachabilityMapListener()
+      ReachabilitySphereMapSimulationHelper simHelper = new ReachabilitySphereMapSimulationHelper(robotInformation);
+      simHelper.setGridParameters(35, 0.05, 40, 5);
+      simHelper.setEvaluateRReachability(true);
+      simHelper.setEvaluateR2Reachability(true);
+      simHelper.enableJointTorqueAnalysis(false);
+      simHelper.setGridPosition(0.4, 0.4, 0.5);
+
+      if (simHelper.start())
       {
-         @Override
-         public void hasReachedNewConfiguration()
-         {
-            jointAnglesWriter.updateRobotConfigurationBasedOnFullRobotModel();
-         }
-      };
-
-      calculator.attachReachabilityMapListener(listener);
-      scs.startOnAThread();
-      
-      calculator.buildReachabilitySpace();
+         simHelper.exportDataToMatlabFile(getClass());
+      }
    }
 
    public static void main(String[] args) throws IOException
